@@ -257,6 +257,7 @@ void StrRev( char *str) {
 
 static char strExePath[MAX_PATH] = "";
 static char strDirPath[MAX_PATH] = "";
+static bool customPath = false;
 
 static void AnalyzeApplicationPath(void)
 {
@@ -294,6 +295,15 @@ static void AnalyzeApplicationPath(void)
   strncpy( strDirPath, pstrFin, sizeof(strDirPath)-1);
   strDirPath[sizeof(strDirPath)-1] = 0;
   delete[] dirsep;
+
+  const char *envDirPath = getenv("SS_DIR_PATH");
+  if (envDirPath) {
+      strncpy(strDirPath, envDirPath, sizeof(strDirPath)-1);
+      customPath = true;
+  }
+
+  fprintf(stderr, "strExePath => %s\n", strExePath);
+  fprintf(stderr, "strDirPath => %s\n", strDirPath);
 }
 
 // rcg03242003
@@ -547,11 +557,13 @@ ENGINE_API void SE_InitEngine(const char *argv0, CTString strGameID)
   _pFileSystem->GetUserDirectory(buf, sizeof (buf));
   _fnmUserDir = CTString(buf);
 
-  try {
-    _fnmApplicationExe.RemoveApplicationPath_t();
-  } catch (char *strError) {
-    (void) strError;
-    ASSERT(FALSE);
+  if (!customPath) {
+    try {
+        _fnmApplicationExe.RemoveApplicationPath_t();
+    } catch (char *strError) {
+        (void) strError;
+        ASSERT(FALSE);
+    }
   }
 
   _pConsole = new CConsole;

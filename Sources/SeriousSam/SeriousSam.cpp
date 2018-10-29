@@ -68,9 +68,9 @@ INDEX sam_bWideScreen = FALSE;
 FLOAT sam_fPlayerOffset = 0.0f;
 
 // display mode settings
-INDEX sam_bFullScreenActive = TRUE;
-INDEX sam_iScreenSizeI = 640;  // current size of the window
-INDEX sam_iScreenSizeJ = 480;  // current size of the window
+INDEX sam_bFullScreenActive = FALSE;
+INDEX sam_iScreenSizeI = 800;  // current size of the window
+INDEX sam_iScreenSizeJ = 600;  // current size of the window
 INDEX sam_iDisplayDepth  = 0;  // 0==default, 1==16bit, 2==32bit
 INDEX sam_iDisplayAdapter = 0; 
 INDEX sam_iGfxAPI = 0;         // 0==OpenGL
@@ -558,12 +558,14 @@ BOOL Init( HINSTANCE hInstance, int nCmdShow, CTString strCmdLine)
 
   _pGame->LCDInit();
 
+#ifndef __HAIKU__
   if( sam_bFirstStarted) {
     InfoMessage("%s", TRANS(
       "SeriousSam is starting for the first time.\n"
       "If you experience any problems, please consult\n"
       "ReadMe file for troubleshooting information."));
   }
+#endif
 
   // initialize sound library
   snd_iFormat = Clamp( snd_iFormat, (INDEX)CSoundLibrary::SF_NONE, (INDEX)CSoundLibrary::SF_44100_16);

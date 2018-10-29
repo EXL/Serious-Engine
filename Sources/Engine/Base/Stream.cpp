@@ -183,6 +183,13 @@ void InitStreams(void)
   CDynamicArray<CTString> *files = NULL;
 
   // for each group file in base directory
+  files = _pFileSystem->FindFiles(_fnmApplicationExe, "*.gro");
+  for (int i = 0; i < files->Count(); i++) {
+      UNZIPAddArchive( _fnmApplicationExe+((*files)[i]) );
+  }
+  delete files;
+
+  // for each group file in base directory
   files = _pFileSystem->FindFiles(_fnmApplicationPath, "*.gro");
   int max = files->Count();
   int i;

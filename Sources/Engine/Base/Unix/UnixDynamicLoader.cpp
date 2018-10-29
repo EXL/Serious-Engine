@@ -52,6 +52,11 @@ const char *CUnixDynamicLoader::GetError(void)
 void *CUnixDynamicLoader::FindSymbol(const char *sym)
 {
     //printf("Looking for symbol %s\n", sym);
+    if (!strncmp(sym, "CGhostBusterRay_DLLClass", strlen(sym))) {
+        fprintf(stderr, "HACK: Do not load this => %s symbol\n", sym);
+        return NULL;
+    }
+
     void *retval = NULL;
     if (module != NULL) {
         retval = ::dlsym(module, sym);
@@ -64,6 +69,7 @@ void *CUnixDynamicLoader::FindSymbol(const char *sym)
 
 void CUnixDynamicLoader::DoOpen(const char *lib)
 {
+    // fprintf(stderr, "dlopen => %s\n", lib);
     module = ::dlopen(lib, RTLD_LAZY | RTLD_GLOBAL);
     SetError();
 }
@@ -92,12 +98,19 @@ CUnixDynamicLoader::CUnixDynamicLoader(const char *libname)
         CTFileName fnm = ConvertLibNameToPlatform(libname);
 
         // Always try to dlopen from inside the game dirs before trying
+
+        const char *envLibPath = getenv("SS_LIB_PATH");
         //  system libraries...
-        if (fnm.FileDir() == "") {
+        if (fnm.FileDir() == "" || envLibPath) {
             char buf[MAX_PATH];
-            _pFileSystem->GetExecutablePath(buf, sizeof (buf));
-            CTFileName fnmDir = CTString(buf);
-            fnmDir = fnmDir.FileDir() + fnm;
+            CTFileName fnmDir;
+            if (envLibPath) {
+                strncpy(buf, envLibPath, MAX_PATH);
+                fnmDir = CTFileName(CTString(buf)).FileDir() + fnm.FileName() + fnm.FileExt();
+            } else {
+                _pFileSystem->GetExecutablePath(buf, sizeof (buf));
+                fnmDir = CTFileName(CTString(buf)).FileDir() + fnm;
+            }
             DoOpen(fnmDir);
             if (module != NULL) {
                 return;
