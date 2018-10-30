@@ -36,6 +36,10 @@ extern CStaticStackArray<GFXColor>    _acolCommon;
 extern CStaticStackArray<INDEX>       _aiCommonElements;
 extern CStaticStackArray<INDEX>       _aiCommonQuads;
 
+#ifdef __HAIKU__
+static HGLRC                          go_hglRC = NULL;
+#endif
+
 #include <Engine/Graphics/OpenGL.h>
 #include <Engine/Graphics/Gfx_wrapper.h>
 #include <Engine/Base/DynamicLoader.h>
@@ -158,7 +162,9 @@ public:
   DWORD gl_dwVertexShader;
 
   // OpenGL info
+#ifndef __HAIKU__
   HGLRC    go_hglRC;                  // rendering context
+#endif
   CTString go_strExtensions;          // reported extensions
   CTString go_strWinExtensions;
   CTString go_strSupportedExtensions; // supported extensions

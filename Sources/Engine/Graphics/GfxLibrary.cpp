@@ -515,7 +515,11 @@ static void GAPInfo(void)
   ASSERT( GfxValidApi(eAPI) );
 
   // in case of driver hasn't been initialized yet
+#ifndef __HAIKU__
   if( (_pGfx->go_hglRC==NULL
+#else
+  if( (go_hglRC==NULL
+#endif
 #ifdef SE1_D3D
     && _pGfx->gl_pd3dDevice==NULL
 #endif // SE1_D3D
@@ -1034,7 +1038,9 @@ CGfxLibrary::CGfxLibrary(void)
   // no driver loaded
   gl_eCurrentAPI = GAT_NONE;
   gl_hiDriver = NONE;
+#ifndef __HAIKU__
   go_hglRC = NONE;
+#endif
   gl_ctDriverChanges = 0;
 
   // DX8 not loaded either

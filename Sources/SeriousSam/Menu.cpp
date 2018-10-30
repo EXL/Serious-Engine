@@ -935,9 +935,17 @@ void VideoConfirm(void)
   void RevertVideoSettings(void);
   _pConfimedNo = RevertVideoSettings;
 
+#ifndef __HAIKU__
   mgConfirmLabel.mg_strText = TRANS("KEEP THIS SETTING?");
+#else
+  mgConfirmLabel.mg_strText = TRANS("   KEEP THIS SETTING? GAME RESTART REQUIRED!");
+#endif
   gmConfirmMenu.gm_pgmParentMenu = pgmCurrentMenu;
+#ifndef __HAIKU__
   gmConfirmMenu.BeLarge();
+#else
+  gmConfirmMenu.BeSmall();
+#endif
   ChangeToMenu( &gmConfirmMenu);
 }
 
@@ -2033,7 +2041,12 @@ void ApplyVideoOptions(void)
   UpdateVideoOptionsButtons(-1);
   
   // ask user to keep or restore
+#ifndef __HAIKU__
   if( bFullScreenMode) VideoConfirm();
+#else
+  bool confirmAlso = (sam_old_bFullScreenActive) && (!bFullScreenMode);
+  if( bFullScreenMode || confirmAlso ) VideoConfirm();
+#endif
 }
 
 #define VOLUME_STEPS  50

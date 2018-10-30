@@ -692,6 +692,11 @@ void End(void)
   DirectoryLockOff();
   SE_EndEngine();
 
+#ifndef __HAIKU__
+  SDL_GL_DeleteContext(go_hglRC);
+  go_hglRC = NULL;
+#endif
+
 #if PLATFORM_UNIX
   SDL_Quit();
 #endif
@@ -1526,11 +1531,15 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     pdpNormal = NULL;
   }
 
-  // close the application window
-  CloseMainWindow();
-
   // try to set new display mode
   BOOL bSuccess;
+
+#ifdef __HAIKU__
+  if (_hwndMain == NULL ) {
+#else
+  // close the application window
+  CloseMainWindow();
+#endif
   if( bFullScreenMode) {
 #ifdef SE1_D3D
     if( eGfxAPI==GAT_D3D) OpenMainWindowFullScreen( pixSizeI, pixSizeJ);
@@ -1547,7 +1556,25 @@ BOOL TryToSetDisplayMode( enum GfxAPIType eGfxAPI, INDEX iAdapter, PIX pixSizeI,
     if( bSuccess && eGfxAPI==GAT_D3D) ResetMainWindowNormal();
 #endif // SE1_D3D
   }
+#ifdef __HAIKU__
+  } else {
+    SDL_Window *wnd = (SDL_Window *) _hwndMain;
+    SDL_DisplayMode mode = { (eColorDepth == DD_32BIT) ? SDL_PIXELFORMAT_RGB888 : SDL_PIXELFORMAT_RGB565, pixSizeI, pixSizeJ, 0, 0 };
+    SDL_SetWindowDisplayMode(wnd, &mode);
+    SDL_SetWindowSize(wnd, pixSizeI, pixSizeJ);
 
+    char achWindowTitle[256];
+    SDL_snprintf( achWindowTitle, sizeof (achWindowTitle), TRANS("Serious Sam (Window %dx%d)"), pixSizeI, pixSizeJ);
+    SDL_SetWindowTitle(wnd, achWindowTitle);
+    if (bFullScreenMode) {
+      SDL_SetWindowFullscreen((SDL_Window *) _hwndMain, SDL_WINDOW_FULLSCREEN);
+    } else {
+      SDL_SetWindowFullscreen((SDL_Window *) _hwndMain, 0);
+    }
+
+    bSuccess = TRUE;
+  }
+#endif
   // if new mode was set
   if( bSuccess) {
     // create canvas

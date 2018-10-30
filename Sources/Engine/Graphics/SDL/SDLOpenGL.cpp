@@ -47,8 +47,10 @@ void CGfxLibrary::PlatformEndDriver_OGL(void)
   // shut the driver down
   SDL_GL_MakeCurrent(NULL, NULL);
   if (go_hglRC) {
+#ifndef __HAIKU__
     SDL_GL_DeleteContext(go_hglRC);
     go_hglRC = NULL;
+#endif
   }
 }
 
@@ -57,7 +59,10 @@ BOOL CGfxLibrary::CreateContext_OGL(HDC hdc)
 {
   SDL_Window *window = (SDL_Window *) hdc;
   if( !SetupPixelFormat_OGL( hdc, TRUE)) return FALSE;
-  go_hglRC = SDL_GL_CreateContext(window);
+#ifdef __HAIKU__
+  if( go_hglRC == NULL )
+#endif
+    go_hglRC = SDL_GL_CreateContext(window);
   if( go_hglRC==NULL) {
     sdlCheckError(0, "OpenGL context creation");
     return FALSE;
