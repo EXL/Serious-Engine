@@ -28,7 +28,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #elif (defined PLATFORM_UNIX)
 #define DLLFUNCTION(dll, output, name, inputs, params, required) \
   extern output (*p##name) inputs
+#ifndef __HAIKU__
   #define __stdcall
+#endif
 #else
   #error please define your platform here.
 #endif

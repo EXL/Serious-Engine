@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 // !!! FIXME: rcg01082002 Do something with these.
 #ifdef PLATFORM_UNIX
   #include <Engine/Base/SDL/SDLEvents.h>
-  #if !defined(PLATFORM_MACOSX) && !defined(PLATFORM_FREEBSD)
+  #if !defined(PLATFORM_MACOSX) && !defined(PLATFORM_FREEBSD) && !defined(__HAIKU__)
     #include <mntent.h>
   #endif
 #endif
@@ -69,8 +69,8 @@ FLOAT sam_fPlayerOffset = 0.0f;
 
 // display mode settings
 INDEX sam_bFullScreenActive = FALSE;
-INDEX sam_iScreenSizeI = 800;  // current size of the window
-INDEX sam_iScreenSizeJ = 600;  // current size of the window
+INDEX sam_iScreenSizeI = 640;  // current size of the window
+INDEX sam_iScreenSizeJ = 480;  // current size of the window
 INDEX sam_iDisplayDepth  = 0;  // 0==default, 1==16bit, 2==32bit
 INDEX sam_iDisplayAdapter = 0; 
 INDEX sam_iGfxAPI = 0;         // 0==OpenGL

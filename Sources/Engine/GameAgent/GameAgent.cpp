@@ -36,6 +36,9 @@ typedef int socklen_t;
 #include <netdb.h>
 #include <pthread.h>
 #include <sys/socket.h>
+#ifdef __HAIKU__
+#include <sys/select.h>
+#endif
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>

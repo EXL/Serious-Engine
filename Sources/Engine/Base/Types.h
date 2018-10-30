@@ -137,7 +137,9 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
     #include <string.h>
     #include <stdlib.h>
     #include <unistd.h>
+#ifndef __HAIKU__
     #include <sys/fcntl.h>
+#endif
     #include <sys/stat.h>
     #include <sys/types.h>
     #include <sys/param.h>
@@ -163,8 +165,10 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
 
     #define FAR
     #define __forceinline inline
+#ifndef __HAIKU__
     #define __stdcall
     #define __cdecl
+#endif
     #define WINAPI
 
     #if (!defined MAX_PATH)
@@ -222,7 +226,7 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
     #define _RPT4(type, fmt, a1, a2, a3, a4) _RPT_do(type, fmt, a1, a2, a3, a4)
 
     // !!! FIXME : Should inline functions go somewhere else?
-
+#ifndef __HAIKU__
     inline void _strupr(char *str)
     {
         if (str != NULL)
@@ -231,6 +235,7 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
                *ptr = toupper(*ptr);
         }
     }
+#endif
 
     inline ULONG _rotl(ULONG ul, int bits)
     {
