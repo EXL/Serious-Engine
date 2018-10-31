@@ -165,10 +165,8 @@ MY_STATIC_ASSERT(size_tSize, sizeof(size_t) == sizeof(void*));
 
     #define FAR
     #define __forceinline inline
-#ifndef __HAIKU__
     #define __stdcall
     #define __cdecl
-#endif
     #define WINAPI
 
     #if (!defined MAX_PATH)

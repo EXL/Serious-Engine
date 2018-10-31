@@ -70,13 +70,11 @@ FLOAT sam_fPlayerOffset = 0.0f;
 // display mode settings
 #ifdef __HAIKU__
 INDEX sam_bFullScreenActive = FALSE;
-INDEX sam_iScreenSizeI = 640;  // current size of the window
-INDEX sam_iScreenSizeJ = 480;  // current size of the window
 #else
 INDEX sam_bFullScreenActive = TRUE;
+#endif
 INDEX sam_iScreenSizeI = 800;  // current size of the window
 INDEX sam_iScreenSizeJ = 600;  // current size of the window
-#endif
 INDEX sam_iDisplayDepth  = 0;  // 0==default, 1==16bit, 2==32bit
 INDEX sam_iDisplayAdapter = 0; 
 INDEX sam_iGfxAPI = 0;         // 0==OpenGL
