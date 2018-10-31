@@ -7,6 +7,10 @@
 #include <Engine/Engine.h>
 #include <Engine/Base/DynamicLoader.h>
 
+#ifdef __HAIKU__
+#include <FindDirectory.h>
+#endif
+
 class CUnixDynamicLoader : public CDynamicLoader
 {
 public:
@@ -69,6 +73,18 @@ void *CUnixDynamicLoader::FindSymbol(const char *sym)
 
 void CUnixDynamicLoader::DoOpen(const char *lib)
 {
+    // Small HACK for Haiku OS (:
+#ifdef __HAIKU__
+    static int vorbis_cnt = 3;
+    char path[PATH_MAX];
+    char libpath[PATH_MAX];
+    find_directory(B_SYSTEM_LIB_DIRECTORY, -1, false, libpath, PATH_MAX);
+    if (strstr(lib, "vorbis")) {
+        snprintf(path, sizeof(path), "%s/libvorbisfile.so.%c", libpath, char(vorbis_cnt + '0'));
+        vorbis_cnt++;
+        lib = path;
+    }
+#endif
     // fprintf(stderr, "dlopen => %s\n", lib);
     module = ::dlopen(lib, RTLD_LAZY | RTLD_GLOBAL);
     SetError();
