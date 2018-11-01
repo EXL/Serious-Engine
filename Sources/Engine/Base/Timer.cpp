@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <Engine/Base/Priority.inl>
 
 // !!! FIXME: use SDL timer code instead and rdtsc never?
-#if (defined PLATFORM_UNIX) && !defined(__GNU_INLINE_X86_32__)
+#if (defined(PLATFORM_UNIX) && !defined(__GNU_INLINE_X86_32__)) || defined(PLATFORM_HAIKU)
 #define USE_GETTIMEOFDAY 1
 #endif
 
