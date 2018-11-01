@@ -94,7 +94,15 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 		message("Warning: arch-native will be used!")
 		add_compile_options(-march=native)
 	endif()
-        add_compile_options(-fno-strict-aliasing)
+	if(HAIKU)
+		if(CMAKE_SIZEOF_VOID_P EQUAL 4) # 32-bit
+			message("Warning: Will building 32-bit executable with MMX, SSE, SSE2 support.")
+			add_compile_options(-mmmx -msse -msse2)
+		else()                          # 64-bit
+			message("Warning: Will building 64-bit executable.")
+		endif()
+	endif()
+	add_compile_options(-fno-strict-aliasing)
 	add_definitions(-D_REENTRANT=1)
 	add_definitions(-D_MT=1)
 
